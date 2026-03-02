@@ -1,0 +1,81 @@
+@startuml Hotel Booking System - Class Diagram
+left to right direction
+
+package "Hotel Booking System - Class Diagram" {
+
+    class "<<Application>>\nHotel Booker" as HotelBooker {}
+
+    ' ------------------ USERS ------------------
+    class "<<Resource>>\nAuth" as ResourceAuth {
+        <<POST>> +register(): User
+        <<POST>> +login(): Token
+        <<GET>> +getMe(): User
+    }
+
+    class "<<Representation>>\nUser" as RepresentationUser {
+        -name : String
+        -tel : String
+        -email : String
+        -role : String
+        -password : String
+        -createdAt : Date
+        -isban : Boolean
+    }
+
+    ' ------------------ HOTELS ------------------
+    class "<<Resource>>\nHotels" as ResourceHotels {
+        <<GET>> +getHotels(): Hotel[]
+        <<POST>> +createHotel(): Hotel
+    }
+
+    class "<<Resource>>\nHotel" as ResourceHotel {
+        <<GET>> +getHotel(): Hotel
+        <<PUT>> +updateHotel(): Hotel
+        <<DELETE>> +deleteHotel(): void
+    }
+
+    class "<<Representation>>\nHotel" as RepresentationHotel {
+        -name : String
+        -address : String
+        -district : String
+        -province : String
+        -postalcode : String
+        -tel : String
+        -region : String
+    }
+
+    ' ------------------ BOOKINGS ------------------
+    class "<<Resource>>\nBookings" as ResourceBookings {
+        <<GET>> +getBookings(): Booking[]
+        <<POST>> +createBooking(): Booking
+    }
+
+    class "<<Resource>>\nBooking" as ResourceBooking {
+        <<GET>> +getBooking(): Booking
+        <<PUT>> +updateBooking(): Booking
+        <<DELETE>> +deleteBooking(): void
+    }
+
+    class "<<Representation>>\nBooking" as RepresentationBooking {
+        -apptDate : Date
+        -user : ObjectId
+        -hotel : ObjectId
+        -createdAt : Date
+    }
+
+}
+
+' -------- PATH RELATIONSHIPS --------
+HotelBooker ..> ResourceAuth : "/auth\n<<Path>>"
+HotelBooker ..> ResourceHotels : "/hotels\n<<Path>>"
+HotelBooker ..> ResourceBookings : "/bookings\n<<Path>>"
+
+ResourceHotels ..> ResourceHotel : "/{hotelId}\n<<Path>>"
+ResourceBookings ..> ResourceBooking : "/{bookingId}\n<<Path>>"
+
+' -------- USAGE --------
+ResourceAuth ..> RepresentationUser : "<<use>>"
+ResourceHotel ..> RepresentationHotel : "<<use>>"
+ResourceBooking ..> RepresentationBooking : "<<use>>"
+
+@enduml
