@@ -1,0 +1,29 @@
+@startuml
+skinparam Linetype ortho
+
+entity "Entity404" as e1 {
+    *e1_id: number <<generated>>
+    --
+    *name: text
+    description: text
+}
+
+entity "Herobrine" as e2 {
+    *e2_id: number <<generated>>
+    --
+    *e1_id: number <<FK>>
+    description: text
+}
+
+entity "Herobrine" as e3 {
+    *e3_id: number <<generated>>
+    --
+    *e1_id: number <<FK>>
+    description: text
+}
+
+
+e1 "1"--"M" e2
+e1 "1"--"M" e3
+
+@enduml

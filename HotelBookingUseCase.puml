@@ -1,0 +1,61 @@
+@startuml
+title Hotel Booking System - Use Case Diagram
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing true
+
+actor Guest
+actor User
+actor Admin
+
+User --|> Guest
+Admin --|> User
+
+rectangle "Hotel Booking System" {
+
+  package "Authentication" {
+
+    usecase "Register (POST)" as Register #LightBlue
+    usecase "Login (POST)" as Login #LightBlue
+    usecase "Get Profile (GET)" as GetProfile #LightGreen
+
+  }
+
+  package "Hotel Management" {
+
+    usecase "View Hotels (GET)" as ViewHotels #LightGreen
+    usecase "View Hotel Detail (GET)" as ViewHotel #LightGreen
+    usecase "Create Hotel (POST)" as CreateHotel #LightBlue
+    usecase "Update Hotel (PUT)" as UpdateHotel #LightYellow
+    usecase "Delete Hotel (DELETE)" as DeleteHotel #LightCoral
+
+  }
+
+  package "Booking Management" {
+
+    usecase "View Bookings (GET)" as ViewBookings #LightGreen
+    usecase "View Booking Detail (GET)" as ViewBooking #LightGreen
+    usecase "Create Booking (POST)" as CreateBooking #LightBlue
+    usecase "Update Booking (PUT)" as UpdateBooking #LightYellow
+    usecase "Delete Booking (DELETE)" as DeleteBooking #LightCoral
+
+  }
+}
+
+Guest --> Register
+Guest --> Login
+Guest --> ViewHotels
+Guest --> ViewHotel
+
+User --> GetProfile
+User --> ViewBookings
+User --> ViewBooking
+User --> CreateBooking
+User --> UpdateBooking
+User --> DeleteBooking
+
+Admin --> CreateHotel
+Admin --> UpdateHotel
+Admin --> DeleteHotel
+
+@enduml
