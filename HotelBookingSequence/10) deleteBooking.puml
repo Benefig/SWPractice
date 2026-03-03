@@ -1,0 +1,29 @@
+@startuml Delete Booking (DELETE)
+
+header Hotel Booking Sequence Diagram
+footer Page 10 of 13
+title "Delete Booking (DELETE)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:bookings" as routerBookings
+participant "<<middleware>>\n:protect" as middlewareProtect
+participant "<<controllers>>\n:bookings" as controllersBookings
+participant "<<model>>\n:Booking" as modelBooking
+database "<<MongoDB>>\n:bookings" as BookingsDatabase
+
+client -> server ++ : req.delete('/api/v1/bookings/:id')
+server -> routerBookings ++
+routerBookings -> middlewareProtect ++ : protect()
+middlewareProtect -> controllersBookings ++ : deleteBooking()
+
+controllersBookings -> modelBooking ++ : findById(req.params.id)
+modelBooking -> BookingsDatabase ++ : Query Booking
+BookingsDatabase --> modelBooking -- : booking
+
+controllersBookings -> modelBooking ++ : booking.deleteOne()
+modelBooking -> BookingsDatabase ++ : Delete Booking
+
+controllersBookings -> client -- : JSON {success:true, data:{}}
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml Get Hotel By ID (GET)
+
+header Hotel Booking Sequence Diagram
+footer Page 2 of 13
+title "Get Single Hotel (GET)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:hotels" as routerHotels
+participant "<<controllers>>\n:hotels" as controllersHotels
+participant "<<model>>\n:Hotel" as modelHotel
+database "<<MongoDB>>\n:hotels" as HotelsDatabase
+
+client -> server ++ : req.get('/api/v1/hotels/:id')
+server -> routerHotels ++
+routerHotels -> controllersHotels ++ : getHotel()
+
+controllersHotels -> modelHotel ++ : findById(req.params.id)
+modelHotel -> HotelsDatabase ++ : Query hotel
+HotelsDatabase --> modelHotel -- : hotel
+modelHotel --> controllersHotels -- : hotel
+
+controllersHotels -> client -- : response: JSON {success, data: hotel}
+
+@enduml

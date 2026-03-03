@@ -1,0 +1,25 @@
+@startuml Get Hotels (GET)
+
+header Hotel Booking Sequence Diagram
+footer Page 1 of 13
+title "Get All Hotels (GET)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:hotels" as routerHotels
+participant "<<controllers>>\n:hotels" as controllersHotels
+participant "<<model>>\n:Hotel" as modelHotel
+database "<<MongoDB>>\n:hotels" as HotelsDatabase
+
+client -> server ++ : req.get('/api/v1/hotels')
+server -> routerHotels ++ : app.use('/api/v1/hotels', hotels)
+routerHotels -> controllersHotels ++ : getHotels()
+
+controllersHotels -> modelHotel ++ : find(...).populate('bookings')
+modelHotel -> HotelsDatabase ++ : Query hotels
+HotelsDatabase --> modelHotel -- : hotels
+modelHotel --> controllersHotels -- : hotels
+
+controllersHotels -> client -- : response: JSON {success, count, data: hotels}
+
+@enduml

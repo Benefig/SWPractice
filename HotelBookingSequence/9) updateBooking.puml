@@ -1,0 +1,31 @@
+@startuml Update Booking (PUT)
+
+header Hotel Booking Sequence Diagram
+footer Page 9 of 13
+title "Update Booking (PUT)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:bookings" as routerBookings
+participant "<<middleware>>\n:protect" as middlewareProtect
+participant "<<controllers>>\n:bookings" as controllersBookings
+participant "<<model>>\n:Booking" as modelBooking
+database "<<MongoDB>>\n:bookings" as BookingsDatabase
+
+client -> server ++ : req.put('/api/v1/bookings/:id')
+server -> routerBookings ++
+routerBookings -> middlewareProtect ++ : protect()
+middlewareProtect -> controllersBookings ++ : updateBooking()
+
+controllersBookings -> modelBooking ++ : findById(req.params.id)
+modelBooking -> BookingsDatabase ++ : Query Booking
+BookingsDatabase --> modelBooking -- : booking
+
+controllersBookings -> modelBooking ++ : findByIdAndUpdate(req.params.id, req.body, {new:true})
+modelBooking -> BookingsDatabase ++ : Update Booking
+BookingsDatabase --> modelBooking -- : updated booking
+modelBooking --> controllersBookings -- : updated booking
+
+controllersBookings -> client -- : response: JSON {data: updated booking}
+
+@enduml

@@ -1,0 +1,27 @@
+@startuml Create Hotel (POST)
+
+header Hotel Booking Sequence Diagram
+footer Page 3 of 13
+title "Create Hotel (POST)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:hotels" as routerHotels
+participant "<<middleware>>\n:protect + authorize" as middlewareAuth
+participant "<<controllers>>\n:hotels" as controllersHotels
+participant "<<model>>\n:Hotel" as modelHotel
+database "<<MongoDB>>\n:hotels" as HotelsDatabase
+
+client -> server ++ : req.post('/api/v1/hotels')
+server -> routerHotels ++
+routerHotels -> middlewareAuth ++ : protect(), authorize('admin')
+middlewareAuth -> controllersHotels ++ : createHotel()
+
+controllersHotels -> modelHotel ++ : create(req.body)
+modelHotel -> HotelsDatabase ++ : Insert document
+HotelsDatabase --> modelHotel -- : created hotel
+modelHotel --> controllersHotels -- : created hotel
+
+controllersHotels -> client -- : response: JSON {success, data: hotel}
+
+@enduml

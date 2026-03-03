@@ -1,0 +1,27 @@
+@startuml Get Bookings (GET)
+
+header Hotel Booking Sequence Diagram
+footer Page 6 of 13
+title "Get All Bookings (GET)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:bookings" as routerBookings
+participant "<<middleware>>\n:protect" as middlewareProtect
+participant "<<controllers>>\n:bookings" as controllersBookings
+participant "<<model>>\n:Booking" as modelBooking
+database "<<MongoDB>>\n:bookings" as BookingsDatabase
+
+client -> server ++ : req.get('/api/v1/bookings')
+server -> routerBookings ++ : app.use('/api/v1/bookings', bookings)
+routerBookings -> middlewareProtect ++ : protect()
+middlewareProtect -> controllersBookings ++ : getBookings()
+
+controllersBookings -> modelBooking ++ : find(filter by role).populate('hotel')
+modelBooking -> BookingsDatabase ++ : Query Bookings
+BookingsDatabase --> modelBooking -- : bookings
+modelBooking --> controllersBookings -- : bookings
+
+controllersBookings -> client -- : response: JSON {count, data: bookings}
+
+@enduml
